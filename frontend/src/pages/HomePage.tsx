@@ -1,5 +1,7 @@
 import Navbar from "../components/common/Navbar";
-import Hero from "../components/common/Hero";
+import BackgroundEffects from "../components/home/BackgroundEffects";
+import Hero from "../components/home/Hero";
+import HeroContainer from "../components/home/HeroContainer";
 
 type HomePageProps = {
   status: string;
@@ -8,11 +10,12 @@ type HomePageProps = {
 function HomePage({ status }: HomePageProps) {
   return (
     <>
-      <Navbar />
+      <BackgroundEffects />
 
-      <main>
+      <HeroContainer>
+        <Navbar />
         <Hero />
-      </main>
+      </HeroContainer>
     </>
   );
 }
