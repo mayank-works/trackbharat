@@ -1,16 +1,24 @@
+import SearchBar from "../common/SearchBar";
+
 function Hero() {
   return (
-    <section className="px-12 py-24 text-center">
-      <h1 className="mb-6 text-6xl font-extrabold tracking-tight text-white">
-        Modern Railway
-        <br />
-        Tracking Platform
-      </h1>
+    <section className="px-10 py-12">
+      <div className="mx-auto max-w-5xl text-center">
 
-      <p className="mx-auto max-w-2xl text-lg text-gray-400">
-        Track trains across India with real-time maps, predictive
-        ETAs and a premium travel experience.
-      </p>
+        <h1 className="mb-6 text-7xl font-bold tracking-tight text-white">
+          Track Every Train
+          <br />
+          In Real Time
+        </h1>
+
+        <p className="mx-auto mb-12 max-w-3xl text-xl leading-relaxed text-gray-400">
+          Track trains across India with real-time location updates,
+          predictive ETAs, and an interactive railway network experience.
+        </p>
+
+        <SearchBar />
+
+      </div>
     </section>
   );
 }
