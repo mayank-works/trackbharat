@@ -2,7 +2,7 @@ import SearchBar from "../common/SearchBar";
 
 function Hero() {
   return (
-    <section className="px-10 py-12">
+    <section className="px-10 py-10 pb-6">
       <div className="mx-auto max-w-5xl text-center">
 
         <h1 className="mb-6 text-7xl font-bold tracking-tight text-white">
