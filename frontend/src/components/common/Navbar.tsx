@@ -1,25 +1,26 @@
 // src/components/Navbar.tsx
+import { Link } from 'react-router-dom';
 import { TrainIcon } from './ui/TrainIcon';
 
 function Navbar() {
   return (
     <nav className="flex items-center justify-between px-10 py-7">
-      <div className="flex items-center gap-3">
+      <Link to="/" className="flex items-center gap-3">
         <TrainIcon size={32} className="text-orange-400" />
         <h1 className="text-3xl font-bold tracking-tight">
           <span className="text-white">Track</span>
           <span className="text-orange-500">Bharat</span>
         </h1>
-      </div>
+      </Link>
 
       <div className="flex items-center gap-10 text-gray-300">
-        <button className="transition hover:text-white">
+        <Link to="/trains" className="transition hover:text-white">
           Live Map
-        </button>
+        </Link>
 
-        <button className="transition hover:text-white">
+        <Link to="/trains" className="transition hover:text-white">
           Stations
-        </button>
+        </Link>
 
         <button className="transition hover:text-white">
           Analytics

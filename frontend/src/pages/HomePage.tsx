@@ -3,13 +3,9 @@ import BackgroundEffects from "../components/home/BackgroundEffects";
 import Hero from "../components/home/Hero";
 import HeroContainer from "../components/home/HeroContainer";
 import TrackingShowcase from "../components/home/TrackingShowcase";
-import { MiniRouteMap } from "../components/tracking/MiniRouteMap"; // ← Add this import
+import RailwayNetwork from "../components/home/RailwayNetwork";
 
-type HomePageProps = {
-  status: string;
-};
-
-function HomePage({ status }: HomePageProps) {
+function HomePage() {
   return (
     <>
       <BackgroundEffects />
@@ -18,6 +14,7 @@ function HomePage({ status }: HomePageProps) {
         <Navbar />
         <Hero />
         <TrackingShowcase />
+        <RailwayNetwork />
       </HeroContainer>
     </>
   );

@@ -1,5 +1,7 @@
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom"
 function SearchBar() {
+  const navigate = useNavigate();
   return (
     <div className="mx-auto mt-12 max-w-5xl">
       <div
@@ -53,7 +55,8 @@ function SearchBar() {
           "
         />
 
-        <button
+       <button
+          onClick={() => navigate("/trains")}
           className="
             mr-2
             rounded-full

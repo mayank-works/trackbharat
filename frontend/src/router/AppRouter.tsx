@@ -6,7 +6,7 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage status="healthy" />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/trains" element={<TrainSearchPage />} />
       </Routes>
     </BrowserRouter>

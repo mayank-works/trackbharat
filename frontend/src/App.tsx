@@ -5,4 +5,3 @@ function App() {
 }
 
 export default App;
-console.log(import.meta.env.VITE_TEST);

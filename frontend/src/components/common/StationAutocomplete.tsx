@@ -15,18 +15,16 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  console.log("[StationAutocomplete] render:", { input, open, optionsCount: options.length, options });
+  const query = input.trim();
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (input.trim().length < 2) {
-      setOptions([]);
+    if (query.length < 2) {
       return;
     }
     debounceRef.current = setTimeout(async () => {
       try {
-        const results = await searchStations(input);
-        console.log("[StationAutocomplete] fetch resolved:", results);
+        const results = await searchStations(query);
         setOptions(Array.isArray(results) ? results : []);
         setOpen(true);
       } catch (err) {
@@ -35,7 +33,11 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
       }
     }, 300);
     return () => clearTimeout(debounceRef.current);
-  }, [input]);
+  }, [query]);
+
+  // Derived rather than stored in state: avoids a synchronous setState in
+  // the effect above just to clear results when the query gets too short.
+  const visibleOptions = query.length < 2 ? [] : options;
 
   return (
     <div style={{ position: "relative", marginBottom: "1rem" }}>
@@ -43,12 +45,12 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        onFocus={() => options.length > 0 && setOpen(true)}
+        onFocus={() => visibleOptions.length > 0 && setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder="Station name or code"
         style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
       />
-      {open && options.length > 0 && (
+      {open && visibleOptions.length > 0 && (
         <ul
           style={{
             position: "absolute",
@@ -63,7 +65,7 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
             overflowY: "auto",
           }}
         >
-          {options.map((s) => (
+          {visibleOptions.map((s) => (
             <li
               key={s.code}
               onClick={() => {
