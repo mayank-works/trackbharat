@@ -2,11 +2,11 @@ function TrackingShowcase() {
   return (
     <section className="mx-auto mt-20 max-w-7xl px-8">
       <div className="mb-12 text-center">
-        <h2 className="mb-4 text-5xl font-bold text-white">
+        <h2 className="font-display mb-4 text-5xl font-bold text-white">
           Live Train Tracking
         </h2>
 
-        <p className="mx-auto max-w-3xl text-xl text-gray-400">
+        <p className="mx-auto max-w-3xl text-xl text-steam">
           Follow your train in real time with location updates,
           ETA predictions and journey insights.
         </p>
@@ -28,56 +28,57 @@ function TrackingShowcase() {
 
               {/* Train Marker */}
               <div className="absolute left-[55%] top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div className="h-5 w-5 rounded-full bg-orange-400 shadow-[0_0_20px_rgba(251,146,60,0.8)]" />
+                <div className="h-5 w-5 rounded-full bg-signal shadow-[0_0_20px_rgba(255,107,53,0.8)] animate-pulse" />
               </div>
             </div>
 
-            <div className="mt-4 flex justify-between text-sm text-gray-400">
-              <span>New Delhi</span>
-              <span>Howrah</span>
+            <div className="mt-4 flex justify-between font-mono text-sm text-steam">
+              <span>NDLS</span>
+              <span>HWH</span>
             </div>
           </div>
 
           {/* Train Card */}
           <div className="absolute left-10 top-10 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-xl">
-            <p className="text-sm text-gray-400">
-              Train
-            </p>
+            <div className="flex items-center gap-2 text-sm text-steam">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#2fb673] shadow-[0_0_8px_2px_rgba(47,182,115,0.6)] animate-pulse" />
+              On time
+            </div>
 
-            <h3 className="mt-1 text-xl font-semibold text-white">
+            <h3 className="font-display mt-2 text-xl font-semibold text-white">
               Rajdhani Express
             </h3>
 
-            <p className="mt-2 text-gray-400">
-              New Delhi → Howrah
+            <p className="mt-1 font-mono text-sm text-steam">
+              NDLS → HWH
             </p>
           </div>
 
           {/* ETA Card */}
           <div className="absolute right-10 top-10 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-xl">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-steam">
               ETA
             </p>
 
-            <h3 className="mt-1 text-3xl font-bold text-orange-400">
+            <h3 className="mt-1 font-mono text-3xl font-bold text-signal">
               1h 12m
             </h3>
           </div>
 
           {/* Speed Card */}
           <div className="absolute right-10 top-40 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-xl">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-steam">
               Speed
             </p>
 
-            <h3 className="mt-1 text-2xl font-bold text-white">
+            <h3 className="mt-1 font-mono text-2xl font-bold text-white">
               92 km/h
             </h3>
           </div>
 
           {/* Current Station */}
           <div className="absolute bottom-10 left-10 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-xl">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-steam">
               Current Station
             </p>
 
@@ -88,7 +89,7 @@ function TrackingShowcase() {
 
           {/* Next Station */}
           <div className="absolute bottom-10 right-10 rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-xl">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-steam">
               Next Station
             </p>
 

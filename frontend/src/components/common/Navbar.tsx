@@ -7,9 +7,9 @@ function Navbar() {
     <nav className="flex items-center justify-between px-10 py-7">
       <Link to="/" className="flex items-center gap-3">
         <TrainIcon size={32} className="text-orange-400" />
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="font-display text-3xl font-bold tracking-tight">
           <span className="text-white">Track</span>
-          <span className="text-orange-500">Bharat</span>
+          <span className="text-signal">Bharat</span>
         </h1>
       </Link>
 

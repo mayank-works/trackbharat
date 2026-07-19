@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme {
+  /* Base */
+  --color-ink: #08090d;
+
+  /* Signal orange — the railway semaphore/caution color, already the
+     brand accent. Kept as the single bold accent. */
+  --color-signal: #ff6b35;
+  --color-signal-dim: #ff6b3533;
+
+  /* Muted cool gray for body text, slightly blue rather than neutral —
+     reads calmer against --color-ink than plain gray. */
+  --color-steam: #9aa3b8;
+
+  /* Real railway signal-light semantics, reused everywhere a train's
+     status appears instead of inventing separate ad-hoc colors. */
+  --color-signal-clear: #2fb673; /* green light — on time / running */
+  --color-signal-caution: #ff6b35; /* amber/orange — approaching / boarding */
+  --color-signal-stop: #e5484d; /* red light — delayed / halted */
+
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--color-ink);
+  color: white;
+  font-family: var(--font-body);
+}

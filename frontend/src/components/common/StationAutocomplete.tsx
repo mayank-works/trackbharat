@@ -40,31 +40,20 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
   const visibleOptions = query.length < 2 ? [] : options;
 
   return (
-    <div style={{ position: "relative", marginBottom: "1rem" }}>
-      <label style={{ display: "block", marginBottom: "4px" }}>{label}</label>
+    <div className="relative mb-4">
+      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-steam">
+        {label}
+      </label>
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onFocus={() => visibleOptions.length > 0 && setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder="Station name or code"
-        style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
+        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-steam/60 outline-none transition focus:border-signal/50 focus:bg-white/10"
       />
       {open && visibleOptions.length > 0 && (
-        <ul
-          style={{
-            position: "absolute",
-            zIndex: 10,
-            background: "white",
-            border: "1px solid #ccc",
-            width: "100%",
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            maxHeight: "220px",
-            overflowY: "auto",
-          }}
-        >
+        <ul className="absolute z-10 mt-2 max-h-56 w-full overflow-y-auto rounded-xl border border-white/10 bg-[#0e0f14]/95 backdrop-blur-xl shadow-2xl">
           {visibleOptions.map((s) => (
             <li
               key={s.code}
@@ -73,9 +62,10 @@ export default function StationAutocomplete({ label, value, onSelect }: Props) {
                 setInput(`${s.name} (${s.code})`);
                 setOpen(false);
               }}
-              style={{ padding: "6px 10px", cursor: "pointer" }}
+              className="cursor-pointer px-4 py-2.5 text-white transition hover:bg-white/10"
             >
-              {s.name} <span style={{ color: "#888" }}>({s.code})</span>
+              {s.name}{" "}
+              <span className="font-mono text-xs text-steam">({s.code})</span>
             </li>
           ))}
         </ul>

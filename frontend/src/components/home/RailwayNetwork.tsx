@@ -2,13 +2,11 @@ function RailwayNetwork() {
   return (
     <section className="mx-auto mt-40 max-w-6xl px-8">
       <div className="text-center">
-        <h2 className="mb-4 text-5xl font-bold text-white">
+       <h2 className="font-display mb-4 text-5xl font-bold text-white">
           The Indian Railway Network
         </h2>
 
-        <p className="mx-auto mb-20 max-w-2xl text-lg text-gray-400">
-          A connected system spanning thousands of stations,
-          routes and journeys across the country.
+        <p className="mx-auto mb-20 max-w-2xl text-lg text-steam">
         </p>
       </div>
 
@@ -45,6 +43,8 @@ function RailwayNetwork() {
 
         <div className="absolute left-[55%] top-[73%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-400 shadow-[0_0_20px_rgba(251,146,60,0.8)]" />
 
+        <div className="absolute left-[55%] top-[73%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_20px_rgba(255,107,53,0.8)] animate-pulse" />
+        
       </div>
     </section>
   );
