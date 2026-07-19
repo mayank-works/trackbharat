@@ -1,53 +1,43 @@
-function RailwayNetwork() {
+// RailwayNetwork.tsx
+//
+// "Indian Railway Network" section on the home page. Renders a grayscale
+// silhouette of India as a decorative backdrop, with a layer of live-ish
+// train markers on top. Glassmorphism framing matches the rest of the page.
+//
+// The actual map and the train markers live in their own components so each
+// can evolve independently (e.g. swapping the India outline for a
+// higher-fidelity one, or wiring real-time positions later).
+
+import IndiaMap from "./IndiaMap";
+import ActiveTrainsMap from "./ActiveTrainsMap";
+
+export default function RailwayNetwork() {
   return (
-    <section className="mx-auto mt-40 max-w-6xl px-8">
-      <div className="text-center">
-       <h2 className="font-display mb-4 text-5xl font-bold text-white">
+    <section className="px-8">
+      <div className="mb-10 text-center">
+        <h2 className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">
           The Indian Railway Network
         </h2>
-
-        <p className="mx-auto mb-20 max-w-2xl text-lg text-steam">
+        <p className="mx-auto mt-3 max-w-2xl text-base text-steam sm:text-lg">
+          A live picture of the network, with active trains moving across the
+          country in real time.
         </p>
       </div>
 
-      <div className="relative h-[500px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+        {/* Top reflection, matching the rest of the glass language. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
 
-        {/* Horizontal Lines */}
+        <div className="relative aspect-[5/4] w-full sm:aspect-[16/10]">
+          {/* India silhouette — the background. pointer-events-none so the
+              underlying marker hit-areas (which sit in ActiveTrainsMap)
+              receive hover. */}
+          <IndiaMap className="pointer-events-none absolute inset-0 h-full w-full" />
 
-        <div className="absolute left-[15%] top-[30%] h-[2px] w-[25%] bg-white/20" />
-        <div className="absolute left-[40%] top-[30%] h-[2px] w-[25%] bg-white/20" />
-
-        <div className="absolute left-[25%] top-[55%] h-[2px] w-[30%] bg-white/20" />
-        <div className="absolute left-[55%] top-[55%] h-[2px] w-[15%] bg-white/20" />
-
-        {/* Vertical Lines */}
-
-        <div className="absolute left-[40%] top-[30%] h-[25%] w-[2px] bg-white/20" />
-        <div className="absolute left-[65%] top-[30%] h-[25%] w-[2px] bg-white/20" />
-
-        <div className="absolute left-[55%] top-[55%] h-[18%] w-[2px] bg-white/20" />
-
-        {/* Nodes */}
-
-        <div className="absolute left-[15%] top-[30%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[40%] top-[30%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[65%] top-[30%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[25%] top-[55%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[55%] top-[55%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[70%] top-[55%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/60" />
-
-        <div className="absolute left-[55%] top-[73%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-400 shadow-[0_0_20px_rgba(251,146,60,0.8)]" />
-
-        <div className="absolute left-[55%] top-[73%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_20px_rgba(255,107,53,0.8)] animate-pulse" />
-        
+          {/* Live train markers, layered on top. */}
+          <ActiveTrainsMap />
+        </div>
       </div>
     </section>
   );
 }
-
-export default RailwayNetwork;

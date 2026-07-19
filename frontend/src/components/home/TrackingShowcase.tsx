@@ -1,12 +1,14 @@
 function TrackingShowcase() {
   return (
-    <section className="mx-auto mt-20 max-w-7xl px-8">
-      <div className="mb-12 text-center">
-        <h2 className="font-display mb-4 text-5xl font-bold text-white">
+    // Outer vertical rhythm comes from HeroContainer's gap-16; this section
+    // is responsible only for its own horizontal padding and inner spacing.
+    <section className="mx-auto max-w-7xl px-8 sm:px-10">
+      <div className="mb-8 text-center">
+        <h2 className="font-display mb-3 text-4xl font-bold text-white sm:text-5xl">
           Live Train Tracking
         </h2>
 
-        <p className="mx-auto max-w-3xl text-xl text-steam">
+        <p className="mx-auto max-w-3xl text-base text-steam sm:text-xl">
           Follow your train in real time with location updates,
           ETA predictions and journey insights.
         </p>
