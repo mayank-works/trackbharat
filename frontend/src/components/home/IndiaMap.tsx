@@ -16,7 +16,10 @@
 
 interface IndiaMapProps {
   className?: string;
+  /** Fill opacity of the country silhouette. Defaults to a very low
+   *  atmospheric value so the map reads as backdrop, not content. */
   fillOpacity?: number;
+  /** Stroke opacity of the country silhouette. */
   strokeOpacity?: number;
 }
 
@@ -60,8 +63,8 @@ export const INDIA_VIEWBOX = "0 0 1000 1000";
 
 export default function IndiaMap({
   className = "",
-  fillOpacity = 0.05,
-  strokeOpacity = 0.12,
+  fillOpacity = 0.035,
+  strokeOpacity = 0.1,
 }: IndiaMapProps) {
   return (
     <svg
@@ -71,9 +74,19 @@ export default function IndiaMap({
       aria-hidden="true"
       role="presentation"
     >
+      <defs>
+        {/* A subtle vertical fade — the country fades slightly toward
+            the bottom of the viewBox so the network layer (cities,
+            trains) at the bottom doesn't fight a hard edge. */}
+        <linearGradient id="indiaMapFade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity={1} />
+          <stop offset="80%" stopColor="#ffffff" stopOpacity={0.85} />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity={0.55} />
+        </linearGradient>
+      </defs>
       <path
         d={OUTLINE_PATH}
-        fill="#ffffff"
+        fill="url(#indiaMapFade)"
         fillOpacity={fillOpacity}
         stroke="#ffffff"
         strokeOpacity={strokeOpacity}
