@@ -1,9 +1,11 @@
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+
 function SearchBar() {
   const navigate = useNavigate();
+
   return (
-    <div className="mx-auto mt-12 max-w-5xl">
+    <div className="max-w-md">
       <div
         className="
           relative
@@ -18,7 +20,6 @@ function SearchBar() {
           shadow-[0_10px_40px_rgba(0,0,0,0.35)]
         "
       >
-        {/* top reflection */}
         <div
           className="
             pointer-events-none
@@ -33,8 +34,8 @@ function SearchBar() {
           "
         />
         <Search
-        size={22}
-        className="ml-5 text-gray-400"
+        size={18}
+        className="ml-4 text-gray-400"
         />
 
         <input
@@ -44,9 +45,9 @@ function SearchBar() {
             min-w-0
             flex-1
             bg-transparent
-            px-4
-            py-6
-            text-xl
+            px-3
+            py-4
+            text-base
             font-medium
             text-white
             outline-none
@@ -55,7 +56,7 @@ function SearchBar() {
           "
         />
 
-       <button
+        <button
           onClick={() => navigate("/trains")}
           className="
             mr-2
@@ -63,8 +64,9 @@ function SearchBar() {
             border
             border-white/15
             bg-white/10
-            px-6
-            py-3
+            px-5
+            py-2.5
+            text-sm
             text-white
             backdrop-blur-xl
             transition-all

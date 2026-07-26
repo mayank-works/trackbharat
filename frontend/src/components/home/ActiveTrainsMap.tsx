@@ -22,7 +22,7 @@
 // border, blur) without duplicating SVG text styles.
 
 import { useEffect, useMemo, useState } from "react";
-import { INDIA_BBOX, INDIA_VIEWBOX } from "./IndiaMap";
+import { INDIA_VIEWBOX, projectToViewBox } from "./mapProjection";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
 
@@ -88,15 +88,6 @@ const FALLBACK_TRAINS: ActiveTrain[] = [
   { number: "22691", name: "Rajdhani Express", lat: 15.5, lng: 76.5, etaMinutes: 9, status: "Approaching" },
   { number: "12423", name: "Dibrugarh Rajdhani", lat: 28.0, lng: 80.0, etaMinutes: 58, status: "On time" },
 ];
-
-function projectToViewBox(lat: number, lng: number): { x: number; y: number } {
-  const x =
-    ((lng - INDIA_BBOX.minLng) / (INDIA_BBOX.maxLng - INDIA_BBOX.minLng)) * 1000;
-  // Latitude grows north, but SVG y grows south — invert.
-  const y =
-    ((INDIA_BBOX.maxLat - lat) / (INDIA_BBOX.maxLat - INDIA_BBOX.minLat)) * 1000;
-  return { x, y };
-}
 
 export default function ActiveTrainsMap() {
   const [trains, setTrains] = useState<ActiveTrain[] | null>(null);
