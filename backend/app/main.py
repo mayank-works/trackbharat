@@ -255,13 +255,6 @@ def trains_between(
 
     try:
         payload = railradar_fetch_trains_between(from_code, to_code, params)
-    except requests.RequestException as e:
-        raise HTTPException(status_code=503, detail=f"RailRadar unreachable: {e}")
-
-    # Re-map HTTP errors from the low-level call to meaningful responses
-    # (Note: _railradar_get raises on non-2xx, so we catch the HTTPError
-    #  and translate it here. The original inline code checked status codes
-    #  manually; we preserve that behavior by inspecting the exception.)
     except requests.HTTPError as e:
         status = e.response.status_code if e.response else 500
         if status == 404:
@@ -269,8 +262,8 @@ def trains_between(
         if status == 429:
             raise HTTPException(status_code=429, detail="RailRadar rate limit exceeded")
         raise HTTPException(status_code=status, detail="RailRadar API error")
-
-    return payload.get("data", payload)
+    except requests.RequestException as e:
+        raise HTTPException(status_code=503, detail=f"RailRadar unreachable: {e}")
 
 
 # ---------------------------------------------------------------------------

@@ -1,52 +1,74 @@
-// src/components/Navbar.tsx
-import { Link } from 'react-router-dom';
-import { TrainIcon } from './ui/TrainIcon';
+import GlassSurface from "../effects/GlassSurface";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav className="flex items-center justify-between px-10 py-7">
-      <Link to="/" className="flex items-center gap-3">
-        <TrainIcon size={32} className="text-orange-400" />
-        <h1 className="font-display text-3xl font-bold tracking-tight">
-          <span className="text-white">Track</span>
-          <span className="text-signal">Bharat</span>
-        </h1>
-      </Link>
+    <div className="fixed left-0 right-0 top-6 z-50 flex justify-center">
+      <GlassSurface
+        width="92%"
+        height={72}
+        borderRadius={999}
+        backgroundOpacity={0.08}
+        brightness={42}
+        blur={10}
+        opacity={0.95}
+        displace={0.15}
+        distortionScale={-140}
+        className="max-w-7xl"
+      >
+        <div className="flex w-full items-center justify-between px-8">
 
-      <div className="flex items-center gap-10 text-gray-300">
-        <Link to="/trains" className="transition hover:text-white">
-          Live Map
-        </Link>
+          {/* Logo */}
 
-        <Link to="/trains" className="transition hover:text-white">
-          Stations
-        </Link>
+          <Link
+            to="/"
+            className="text-2xl font-bold tracking-tight text-text-950"
+          >
+            Track<span className="text-primary-500">Bharat</span>
+          </Link>
 
-        <button className="transition hover:text-white">
-          Analytics
-        </button>
+          {/* Navigation */}
 
-        <button
-          className="
-            relative overflow-hidden rounded-2xl
-            border border-white/20
-            bg-white/10
-            px-6 py-2
-            text-white
-            backdrop-blur-xl
-            transition-all duration-300
-            hover:bg-white/15
-            hover:border-white/30
-            hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
-          "
-        >
-          <span className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
-          <span className="relative z-10">
-            Login
-          </span>
-        </button>
-      </div>
-    </nav>
+          <nav className="hidden gap-10 md:flex">
+
+            <Link to="/" className="text-text-700 transition hover:text-primary-500">
+              Home
+            </Link>
+
+            <Link to="/live" className="text-text-700 transition hover:text-primary-500">
+              Live
+            </Link>
+
+            <Link to="/routes" className="text-text-700 transition hover:text-primary-500">
+              Routes
+            </Link>
+
+            <Link to="/about" className="text-text-700 transition hover:text-primary-500">
+              About
+            </Link>
+
+          </nav>
+
+          {/* CTA */}
+
+          <button
+            className="
+              rounded-full
+              bg-primary-500
+              px-6
+              py-2.5
+              font-medium
+              text-white
+              transition
+              hover:bg-primary-400
+            "
+          >
+            Track Now
+          </button>
+
+        </div>
+      </GlassSurface>
+    </div>
   );
 }
 
