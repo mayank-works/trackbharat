@@ -1,24 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Base */
-  --color-ink: #08090d;
-
-  /* Signal orange — the railway semaphore/caution color, already the
-     brand accent. Kept as the single bold accent. */
-  --color-signal: #ff6b35;
-  --color-signal-dim: #ff6b3533;
-
-  /* Muted cool gray for body text, slightly blue rather than neutral —
-     reads calmer against --color-ink than plain gray. */
-  --color-steam: #9aa3b8;
-
-  /* Real railway signal-light semantics, reused everywhere a train's
-     status appears instead of inventing separate ad-hoc colors. */
-  --color-signal-clear: #2fb673; /* green light — on time / running */
-  --color-signal-caution: #ff6b35; /* amber/orange — approaching / boarding */
-  --color-signal-stop: #e5484d; /* red light — delayed / halted */
-
+  --color-ink: #0a0a0a;
+  --color-surface: #1a1a1a;
+  --color-surface-light: #2a2a2a;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-light: rgba(255, 255, 255, 0.15);
+  
   --font-display: "Space Grotesk", "Inter", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -26,23 +17,24 @@
 
 body {
   background: var(--color-ink);
-  color: white;
+  color: var(--color-text-primary);
   font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
 }
 
-/* Soft pulse for the active train halos. Scales and fades the
-   outermost orange ring so each train appears to "breathe" without
-   the eye being pulled toward any one train. */
 @keyframes trainPulse {
-  0%   { transform: scale(0.85); opacity: 0.55; }
-  50%  { transform: scale(1.25); opacity: 1;    }
+  0% { transform: scale(0.85); opacity: 0.55; }
+  50% { transform: scale(1.25); opacity: 1; }
   100% { transform: scale(0.85); opacity: 0.55; }
 }
 
-/* Subtle drift for the route lines: a low-amplitude gradient that
-   travels along the stroke. Kept very low opacity so the network
-   feels alive without becoming busy. */
 @keyframes routeFlow {
-  0%   { stroke-dashoffset: 0;   }
+  0% { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -24; }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
 }
