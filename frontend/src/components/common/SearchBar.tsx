@@ -5,19 +5,28 @@ import SpecularButton from "./SpecularButton";
 function SearchBar() {
   const navigate = useNavigate();
 
+  const handleSearch = () => {
+    navigate("/trains");
+  };
+
   return (
     <div className="max-w-md">
       <div className="relative flex items-center overflow-hidden rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        
+
         <Search size={18} className="ml-4 text-gray-500" />
-        
+
         <input
           type="text"
           placeholder="Search train..."
           className="min-w-0 flex-1 bg-transparent px-3 py-4 text-base font-medium text-white outline-none placeholder:text-sm placeholder:text-gray-500"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
         />
-        
+
         <SpecularButton
           size="sm"
           radius={999}
@@ -34,7 +43,7 @@ function SearchBar() {
           speed={0.35}
           followMouse={true}
           proximity={200}
-          onClick={() => navigate("/trains")}
+          onClick={handleSearch}
           className="mr-2"
         >
           Search
