@@ -1,5 +1,6 @@
+// frontend/src/components/home/Hero.tsx
 import HeroContent from "./HeroContent";
-import HeroPreview from "./HeroPreview";
+import { LiveTrackingWidget } from "../tracking/LiveTrackingWidget";
 
 function Hero() {
   return (
@@ -8,7 +9,9 @@ function Hero() {
         <div>
           <HeroContent />
         </div>
-        <HeroPreview />
+        <div>
+          <LiveTrackingWidget />
+        </div>
       </div>
     </section>
   );
