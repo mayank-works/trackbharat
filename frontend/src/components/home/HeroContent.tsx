@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import SpecularButton from "../common/SpecularButton";
 
 function HeroContent() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function HeroContent() {
 
       {/* Search Bar */}
       <div className="mt-10 max-w-md">
-        <div className="relative flex items-center overflow-hidden rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+        <div className="relative flex items-center rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
           <span className="ml-4 text-gray-500">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
@@ -45,12 +46,28 @@ function HeroContent() {
             }}
           />
 
-          <button
+          <SpecularButton
+            size="sm"
+            radius={999}
+            tint="#ffffff"
+            tintOpacity={0.1}
+            blur={12}
+            textColor="#ffffff"
+            lineColor="#ffffff"
+            baseColor="#3a3a3a"
+            intensity={0.7}
+            shineSize={15}
+            shineFade={30}
+            thickness={0.7}
+            speed={0.35}
+            followMouse={true}
+            autoAnimate={false}
+            proximity={200}
             onClick={handleSearch}
-            className="mr-2 rounded-full border border-white/10 bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20"
+            className="mr-2"
           >
             Search
-          </button>
+          </SpecularButton>
         </div>
       </div>
     </>

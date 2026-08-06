@@ -4,6 +4,7 @@ import SignalDot from "../components/common/ui/SignalDot";
 import { getTrainsBetween } from "../../src/api/backend";
 import type { Station, TrainBetween } from "../../src/api/backend";
 import DotField from "../components/effects/DotGrid";
+import SpecularButton from "../components/common/SpecularButton";
 
 export default function TrainSearch() {
   const [from, setFrom] = useState<Station | null>(null);
@@ -81,13 +82,29 @@ export default function TrainSearch() {
             </div>
 
             {/* Search Button */}
-            <button
-              onClick={handleSearch}
-              disabled={loading}
-              className="relative mt-3 w-full rounded-full border border-orange-500/20 bg-white/[0.04] px-6 py-3 font-medium text-white backdrop-blur-xl transition-all duration-300 hover:bg-orange-500/15 hover:border-orange-500/40 hover:shadow-[0_0_30px_rgba(255,165,0,0.12)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? "Searching..." : "Search Trains"}
-            </button>
+            <SpecularButton
+                size="md"
+                radius={999}
+                tint="#ffffff"
+                tintOpacity={0.1}
+                blur={12}
+                textColor="#ffffff"
+                lineColor="#ffffff"
+                baseColor="#3a3a3a"
+                intensity={0.7}
+                shineSize={15}
+                shineFade={30}
+                thickness={0.7}
+                speed={0.35}
+                followMouse={true}
+                autoAnimate={false}
+                proximity={200}
+                onClick={handleSearch}
+                disabled={loading}
+                className="mt-2 w-full"
+              >
+              {loading ? "Searching…" : "Search Trains"}
+              </SpecularButton>
 
             {/* Error */}
             {error && (
