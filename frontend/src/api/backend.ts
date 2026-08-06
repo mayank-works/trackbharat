@@ -1,8 +1,7 @@
-// Add these to frontend/src/api/backend.ts (alongside your existing axios setup)
-
+// frontend/src/api/backend.ts
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export interface Station {
   code: string;
@@ -11,8 +10,29 @@ export interface Station {
 
 export async function searchStations(query: string): Promise<Station[]> {
   if (!query.trim()) return [];
-  const res = await axios.get(`${API_URL}/stations/search`, { params: { q: query } });
-  return res.data.results;
+  
+  try {
+    const res = await axios.get(`${API_URL}/stations/search`, { 
+      params: { q: query } 
+    });
+    
+    console.log("API Response:", res.data);
+    
+    // The API returns { query, count, results }
+    if (res.data && res.data.results && Array.isArray(res.data.results)) {
+      return res.data.results;
+    }
+    
+    // Fallback: if results is in a different format
+    if (res.data && Array.isArray(res.data)) {
+      return res.data;
+    }
+    
+    return [];
+  } catch (error) {
+    console.error("Search failed:", error);
+    return [];
+  }
 }
 
 export interface TrainBetween {

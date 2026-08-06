@@ -19,7 +19,7 @@ function SearchBar() {
         <input
           type="text"
           placeholder="Search train..."
-          className="min-w-0 flex-1 bg-transparent px-3 py-4 text-base font-medium text-white outline-none placeholder:text-sm placeholder:text-gray-500"
+          className="min-w-0 flex-1 bg-transparent px-3 py-4 text-base font-medium text-white outline-none placeholder:text-sm placeholder:text-white/60"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSearch();

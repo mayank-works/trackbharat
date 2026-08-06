@@ -54,7 +54,7 @@ function HeroContent() {
             blur={12}
             textColor="#ffffff"
             lineColor="#ffffff"
-            baseColor="#3a3a3a"
+            baseColor="#f7f5f5"
             intensity={0.7}
             shineSize={15}
             shineFade={30}

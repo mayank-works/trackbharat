@@ -1,33 +1,57 @@
-import { Link } from "react-router-dom";
+// frontend/src/components/common/Navbar.tsx
+import { Link } from 'react-router-dom';
+import { TrainIcon } from './ui/TrainIcon';
 
 function Navbar() {
   return (
-    <div className="fixed left-0 right-0 top-6 z-50 flex justify-center">
-      <div className="flex w-[92%] max-w-7xl items-center justify-between rounded-[999px] border border-white/10 bg-white/5 px-8 py-3 backdrop-blur-xl shadow-lg">
-        <Link to="/" className="text-2xl font-bold tracking-tight text-white">
-          Track<span className="text-white/60">Bharat</span>
+    <nav className="flex items-center justify-between px-10 py-7">
+      <Link to="/" className="flex items-center gap-3">
+        <TrainIcon size={32} className="text-signal" />
+        <h1 className="font-display text-3xl font-bold tracking-tight">
+          <span className="text-white">Track</span>
+          <span className="text-signal">Bharat</span>
+        </h1>
+      </Link>
+
+      <div className="flex items-center gap-10 text-gray-300">
+        <Link to="/" className="transition hover:text-white">
+          Home
         </Link>
 
-        <nav className="hidden gap-10 md:flex">
-          <Link to="/" className="text-gray-400 transition hover:text-white">
-            Home
-          </Link>
-          <Link to="/live" className="text-gray-400 transition hover:text-white">
-            Live
-          </Link>
-          <Link to="/routes" className="text-gray-400 transition hover:text-white">
-            Routes
-          </Link>
-          <Link to="/about" className="text-gray-400 transition hover:text-white">
-            About
-          </Link>
-        </nav>
+        <Link to="/trains" className="transition hover:text-white">
+          Live Map
+        </Link>
 
-        <button className="rounded-full border border-white/20 bg-white/10 px-6 py-2.5 font-medium text-white transition hover:bg-white/20">
-          Track Now
+        <Link to="/trains" className="transition hover:text-white">
+          Routes
+        </Link>
+
+        <Link to="/about" className="transition hover:text-white">
+          About
+        </Link>
+
+        <button
+          onClick={() => window.location.href = '/trains'}
+          className="
+            relative overflow-hidden rounded-2xl
+            border border-white/20
+            bg-white/10
+            px-6 py-2
+            text-white
+            backdrop-blur-xl
+            transition-all duration-300
+            hover:bg-white/15
+            hover:border-white/30
+            hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
+          "
+        >
+          <span className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
+          <span className="relative z-10">
+            Track Now
+          </span>
         </button>
       </div>
-    </div>
+    </nav>
   );
 }
 
