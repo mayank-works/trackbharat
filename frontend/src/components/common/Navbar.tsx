@@ -4,52 +4,31 @@ import { TrainIcon } from './ui/TrainIcon';
 
 function Navbar() {
   return (
-    <nav className="flex items-center justify-between px-10 py-7">
+    <nav className="flex items-center justify-between px-8 py-4 flex-shrink-0">
       <Link to="/" className="flex items-center gap-3">
-        <TrainIcon size={32} className="text-signal" />
-        <h1 className="font-display text-3xl font-bold tracking-tight">
+        <TrainIcon size={28} className="text-signal" />
+        <h1 className="font-display text-2xl font-bold tracking-tight">
           <span className="text-white">Track</span>
           <span className="text-signal">Bharat</span>
         </h1>
       </Link>
 
-      <div className="flex items-center gap-10 text-gray-300">
-        <Link to="/" className="transition hover:text-white">
+      <div className="flex items-center gap-8 text-gray-300">
+        <Link to="/" className="transition hover:text-white text-sm">
           Home
         </Link>
 
-        <Link to="/trains" className="transition hover:text-white">
+        <Link to="/trains" className="transition hover:text-white text-sm">
           Live Map
         </Link>
 
-        <Link to="/trains" className="transition hover:text-white">
+        <Link to="/trains" className="transition hover:text-white text-sm">
           Routes
         </Link>
 
-        <Link to="/about" className="transition hover:text-white">
+        <Link to="/about" className="transition hover:text-white text-sm">
           About
         </Link>
-
-        <button
-          onClick={() => window.location.href = '/trains'}
-          className="
-            relative overflow-hidden rounded-2xl
-            border border-white/20
-            bg-white/10
-            px-6 py-2
-            text-white
-            backdrop-blur-xl
-            transition-all duration-300
-            hover:bg-white/15
-            hover:border-white/30
-            hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]
-          "
-        >
-          <span className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
-          <span className="relative z-10">
-            Track Now
-          </span>
-        </button>
       </div>
     </nav>
   );

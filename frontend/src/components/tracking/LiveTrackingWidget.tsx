@@ -3,9 +3,15 @@ import React, { useState } from "react";
 import { useLiveTracking } from "../../hooks/useLiveTracking";
 import { TrainStatusCard } from "./TrainStatusCard";
 
-export const LiveTrackingWidget: React.FC = () => {
-  const [input, setInput] = useState("");
-  const [trackingNumber, setTrackingNumber] = useState<string | null>(null);
+interface Props {
+  defaultTrain?: string;
+}
+
+const LiveTrackingWidget: React.FC<Props> = ({ defaultTrain = "" }) => {
+  const [input, setInput] = useState(defaultTrain || "");
+  const [trackingNumber, setTrackingNumber] = useState<string | null>(
+    defaultTrain || null
+  );
 
   const { status, isConnected, isLoading, error, lastUpdated, refresh } =
     useLiveTracking(trackingNumber);
@@ -21,6 +27,12 @@ export const LiveTrackingWidget: React.FC = () => {
   const handleClear = () => {
     setTrackingNumber(null);
     setInput("");
+  };
+
+  const handleRefresh = () => {
+    if (trackingNumber) {
+      refresh();
+    }
   };
 
   return (
@@ -52,37 +64,54 @@ export const LiveTrackingWidget: React.FC = () => {
         )}
       </form>
 
+      {/* Error */}
       {error && (
         <div className="mb-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-2.5 text-sm flex items-center justify-between">
           <span>{error}</span>
           {trackingNumber && (
-            <button onClick={refresh} className="text-red-400 hover:text-red-300 underline text-xs">
+            <button 
+              onClick={handleRefresh} 
+              className="text-red-400 hover:text-red-300 underline text-xs"
+            >
               Retry
             </button>
           )}
         </div>
       )}
 
+      {/* Status Bar */}
       {trackingNumber && status && (
         <div className="flex items-center justify-between mb-2 px-1">
           <div className="flex items-center gap-2 text-xs text-steam">
-            <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? "bg-emerald-500" : "bg-gray-500"}`} />
+            <div 
+              className={`w-1.5 h-1.5 rounded-full ${
+                isConnected ? "bg-emerald-500 animate-pulse" : "bg-gray-500"
+              }`} 
+            />
             <span>{isConnected ? "Live updates active" : "Polling mode"}</span>
           </div>
           {lastUpdated && (
-            <span className="text-xs text-steam/50">{lastUpdated.toLocaleTimeString()}</span>
+            <span className="text-xs text-steam/50">
+              {lastUpdated.toLocaleTimeString()}
+            </span>
           )}
         </div>
       )}
 
-      {status && <TrainStatusCard trainNumber={trackingNumber!} status={status} />}
+      {/* Train Status Card */}
+      {status && trackingNumber && (
+        <TrainStatusCard trainNumber={trackingNumber} status={status} />
+      )}
 
+      {/* Empty State */}
       {!trackingNumber && !isLoading && !error && (
         <div className="text-center py-10 text-steam/50">
           <p className="text-sm">Enter a train number to start live tracking</p>
-          <p className="text-xs mt-1 text-steam/30">e.g. 12951, 12002</p>
+          <p className="text-xs mt-1 text-steam/30">e.g. 12951, 12002, 18126</p>
         </div>
       )}
     </div>
   );
 };
+
+export default LiveTrackingWidget;

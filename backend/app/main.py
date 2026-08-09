@@ -5,7 +5,7 @@ import json
 import asyncio
 from pathlib import Path
 from typing import Optional, Dict, Tuple
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
@@ -36,6 +36,28 @@ app.add_middleware(
 
 def railradar_headers():
     return {"Authorization": f"Bearer {RAILRADAR_API_KEY}"}
+
+# ------------------------------------------------------------------
+# Shared Mock Data Helper
+# ------------------------------------------------------------------
+def _get_mock_data(train_number: str) -> dict:
+    return {
+        "train_number": train_number,
+        "train_name": f"Train {train_number}",
+        "current_station": "New Delhi",
+        "current_status": "RUNNING",
+        "delay_minutes": 0,
+        "next_station": "Agra Cantt",
+        "eta_next": "2h 30m",
+        "platform": "1",
+        "speed": 85,
+        "route": [
+            {"station": "New Delhi", "code": "NDLS", "arrival": "06:00", "departure": "06:15", "status": "COMPLETED"},
+            {"station": "Agra Cantt", "code": "AGC", "arrival": "08:45", "departure": "08:50", "status": "CURRENT"},
+            {"station": "Jhansi", "code": "JHS", "arrival": "10:30", "departure": "10:35", "status": "UPCOMING"},
+            {"station": "Bhopal", "code": "BPL", "arrival": "13:00", "departure": "13:05", "status": "UPCOMING"},
+        ]
+    }
 
 # ------------------------------------------------------------------
 # System
@@ -179,20 +201,18 @@ def _get_cached(train_number: str) -> Optional[dict]:
     entry = _live_status_cache.get(train_number)
     if entry:
         data, ts = entry
-        if datetime.utcnow() - ts < _cache_ttl:
+        if datetime.now(timezone.utc) - ts < _cache_ttl:
             return data
     return None
 
 def _set_cached(train_number: str, data: dict):
-    _live_status_cache[train_number] = (data, datetime.utcnow())
+    _live_status_cache[train_number] = (data, datetime.now(timezone.utc))
 
 # ------------------------------------------------------------------
 # LIVE TRAIN STATUS (REST)
 # ------------------------------------------------------------------
 @app.get("/trains/live/{train_number}", tags=["Live Tracking"])
 def get_train_live_status(train_number: str):
-    if not RAILRADAR_API_KEY:
-        raise HTTPException(status_code=500, detail="RailRadar API key not configured")
 
     cached = _get_cached(train_number)
     if cached:
@@ -216,36 +236,19 @@ def get_train_live_status(train_number: str):
                     "train_number": train_number,
                     "data": payload,
                     "cached": False,
-                    "timestamp": datetime.utcnow().isoformat(),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
                 }
         except requests.RequestException:
             continue
 
-    # Return mock data for demo
-    mock_data = {
-        "train_number": train_number,
-        "train_name": f"Train {train_number}",
-        "current_station": "New Delhi",
-        "current_status": "RUNNING",
-        "delay_minutes": 0,
-        "next_station": "Agra Cantt",
-        "eta_next": "2h 30m",
-        "platform": "1",
-        "speed": 85,
-        "route": [
-            {"station": "New Delhi", "code": "NDLS", "arrival": "06:00", "departure": "06:15", "status": "COMPLETED"},
-            {"station": "Agra Cantt", "code": "AGC", "arrival": "08:45", "departure": "08:50", "status": "CURRENT"},
-            {"station": "Jhansi", "code": "JHS", "arrival": "10:30", "departure": "10:35", "status": "UPCOMING"},
-            {"station": "Bhopal", "code": "BPL", "arrival": "13:00", "departure": "13:05", "status": "UPCOMING"},
-        ]
-    }
+    mock_data = _get_mock_data(train_number)
     _set_cached(train_number, mock_data)
     return {
         "success": True,
         "train_number": train_number,
         "data": mock_data,
         "cached": False,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "mock": True
     }
 
@@ -290,12 +293,13 @@ async def websocket_live_tracking(websocket: WebSocket, train_number: str):
                 "type": "live_update",
                 "train_number": train_number,
                 "data": data,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             })
             await asyncio.sleep(30)
     except WebSocketDisconnect:
         manager.disconnect(websocket, train_number)
-    except Exception:
+    except Exception as e:
+        print(f"WebSocket error for {train_number}: {e}")
         manager.disconnect(websocket, train_number)
 
 async def _fetch_live_async(train_number: str) -> dict:
@@ -308,7 +312,7 @@ def _fetch_live_sync(train_number: str) -> dict:
         return cached
 
     if not RAILRADAR_API_KEY:
-        return {"error": "API key not configured"}
+        return _get_mock_data(train_number)
 
     endpoints = [
         f"{RAILRADAR_BASE_URL}/trains/{train_number}/live",
@@ -325,4 +329,5 @@ def _fetch_live_sync(train_number: str) -> dict:
                 return payload
         except Exception:
             continue
-    return {"error": "Unable to fetch live status"}
+
+    return _get_mock_data(train_number)

@@ -1,51 +1,142 @@
 // frontend/src/components/tracking/TrainStatusCard.tsx
 import React, { useMemo } from "react";
 import type { TrainStatus } from "../../api/services/trainTracking";
+import InteractiveRouteBar from "./InteractiveRouteBar";
 
 interface Props {
   trainNumber: string;
   status: TrainStatus;
 }
 
-export const TrainStatusCard: React.FC<Props> = ({ trainNumber, status }) => {
-  const origin = status.route?.[0]?.station || "Origin";
-  const destination = status.route?.[status.route.length - 1]?.station || "Destination";
+// Helper function to format delay
+const formatDelay = (minutes: number): string => {
+  if (!minutes || minutes === 0) return "On Time";
+  
+  const hours = Math.floor(Math.abs(minutes) / 60);
+  const mins = Math.abs(minutes) % 60;
+  
+  if (hours > 0) {
+    return `${hours}h ${mins}m Delay`;
+  }
+  return `${mins}m Delay`;
+};
 
-  const progressPercent = useMemo(() => {
-    if (!status.route || status.route.length < 2) return 50;
-    const currentIndex = status.route.findIndex((s) => s.status === "CURRENT");
-    if (currentIndex === -1) return 50;
-    return (currentIndex / (status.route.length - 1)) * 100;
+// Helper to get delay color
+const getDelayColor = (minutes: number): string => {
+  if (!minutes || minutes === 0) return "text-emerald-400";
+  if (minutes <= 15) return "text-amber-400";
+  if (minutes <= 60) return "text-orange-400";
+  return "text-rose-400";
+};
+
+export const TrainStatusCard: React.FC<Props> = ({ trainNumber, status }) => {
+  if (!status) {
+    return (
+      <div className="relative overflow-hidden rounded-[32px] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl p-6">
+        <div className="text-center py-8">
+          <div className="w-12 h-12 mx-auto rounded-full border-4 border-white/10 border-t-signal animate-spin mb-4"></div>
+          <p className="text-steam">Loading train data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const origin = status.train?.source?.name || "Origin";
+  const destination = status.train?.destination?.name || "Destination";
+  const originCode = status.train?.source?.code || "";
+  const destinationCode = status.train?.destination?.code || "";
+
+  // Find current station index from route based on actual train position
+  const currentIndex = useMemo(() => {
+    if (!status.route || status.route.length === 0) return 0;
+    
+    // First check: Find station with "at-station" status
+    const atStationIndex = status.route.findIndex((s) => s.status === "at-station");
+    if (atStationIndex !== -1) {
+      console.log("Found at-station at index:", atStationIndex);
+      return atStationIndex;
+    }
+    
+    // Second check: Find station with "departed" status (last departed is current)
+    const departedIndices = status.route
+      .map((s, i) => s.status === "departed" ? i : -1)
+      .filter(i => i !== -1);
+    if (departedIndices.length > 0) {
+      const lastDeparted = departedIndices[departedIndices.length - 1];
+      console.log("Found last departed at index:", lastDeparted);
+      return lastDeparted;
+    }
+    
+    // Third check: Use currentLocation from the API
+    if (status.currentLocation?.stationCode) {
+      const locationIndex = status.route.findIndex(
+        (s) => s.stationCode === status.currentLocation?.stationCode
+      );
+      if (locationIndex !== -1) {
+        console.log("Found currentLocation at index:", locationIndex);
+        return locationIndex;
+      }
+    }
+    
+    // Fourth check: Use nextHalt or previousHalt to estimate position
+    if (status.nextHalt?.stationCode) {
+      const nextIndex = status.route.findIndex(
+        (s) => s.stationCode === status.nextHalt?.stationCode
+      );
+      if (nextIndex !== -1 && nextIndex > 0) {
+        console.log("Estimated position before nextHalt:", nextIndex - 1);
+        return nextIndex - 1;
+      }
+    }
+    
+    console.log("No position found, defaulting to 0");
+    return 0;
+  }, [status.route, status.currentLocation, status.nextHalt]);
+
+  // Get current station name for display
+  const currentStationName = useMemo(() => {
+    if (!status.route || status.route.length === 0) return "—";
+    const current = status.route[currentIndex];
+    return current?.stationName || status.currentLocation?.stationCode || "—";
+  }, [status.route, currentIndex, status.currentLocation]);
+
+  // Build stations for route bar
+  const stations = useMemo(() => {
+    if (!status.route) return [];
+    return status.route.map((s) => ({
+      code: s.stationCode,
+      name: s.stationName,
+      status: s.status === "at-station" ? "current" : 
+              s.status === "departed" ? "completed" : "upcoming",
+      distance: s.distance,
+      arrival: s.scheduledArrival ? new Date(s.scheduledArrival).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined,
+      departure: s.scheduledDeparture ? new Date(s.scheduledDeparture).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined,
+    }));
   }, [status.route]);
 
-  // Find next station
+  // Get next station
   const nextStation = useMemo(() => {
-    if (!status.route) return status.next_station || "—";
-    const currentIndex = status.route.findIndex((s) => s.status === "CURRENT");
-    if (currentIndex !== -1 && currentIndex < status.route.length - 1) {
-      return status.route[currentIndex + 1].station;
+    if (status.nextHalt?.stationName) {
+      return status.nextHalt.stationName;
     }
-    return status.next_station || "—";
-  }, [status.route, status.next_station]);
+    const nextIdx = currentIndex + 1;
+    if (status.route && nextIdx < status.route.length) {
+      return status.route[nextIdx]?.stationName || "—";
+    }
+    return "—";
+  }, [status.route, status.nextHalt, currentIndex]);
 
-  const delayColor =
-    !status.delay_minutes || status.delay_minutes === 0
-      ? "text-emerald-400"
-      : status.delay_minutes <= 15
-      ? "text-amber-400"
-      : "text-rose-400";
-
-  const statusText =
-    !status.delay_minutes || status.delay_minutes === 0
-      ? "On Time"
-      : `${status.delay_minutes}m Delay`;
+  const delayMinutes = status.delayMinutes || 0;
+  const delayText = formatDelay(delayMinutes);
+  const delayColor = getDelayColor(delayMinutes);
+  const speed = status.train?.avgSpeed || 0;
 
   return (
     <div className="relative overflow-hidden rounded-[32px] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
-      <div className="relative p-6 space-y-6">
+      <div className="relative p-6 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -59,8 +150,9 @@ export const TrainStatusCard: React.FC<Props> = ({ trainNumber, status }) => {
             <div>
               <p className="text-[10px] font-medium text-steam tracking-[0.15em] uppercase">Live Tracking</p>
               <h3 className="text-xl font-bold text-white">
-                {status.train_name || `Train ${trainNumber}`}
+                {status.train?.name || `Train ${trainNumber}`}
               </h3>
+              <p className="text-xs text-steam/50">#{trainNumber}</p>
             </div>
           </div>
 
@@ -73,47 +165,56 @@ export const TrainStatusCard: React.FC<Props> = ({ trainNumber, status }) => {
           </div>
         </div>
 
-        {/* Simple Route Line */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs font-medium text-steam tracking-wide">
-            <span className="uppercase">{origin}</span>
-            <span className="uppercase">{destination}</span>
-          </div>
+        {/* Origin -> Destination */}
+        <div className="flex justify-between text-xs font-medium text-steam/60 tracking-wide">
+          <span className="uppercase">{origin} ({originCode})</span>
+          <span className="uppercase">{destination} ({destinationCode})</span>
+        </div>
 
-          <div className="relative h-6 flex items-center">
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-white/10" />
-            <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-1000"
-              style={{ left: `${progressPercent}%` }}
-            >
-              <div className="w-3 h-3 rounded-full bg-signal border-2 border-white/20 shadow-lg shadow-signal/30" />
-            </div>
+        {/* Interactive Route Bar - Fluid line */}
+        {stations.length > 0 && (
+          <InteractiveRouteBar
+            stations={stations}
+            currentStationIndex={currentIndex}
+            trainName={status.train?.name}
+            trainNumber={trainNumber}
+          />
+        )}
+
+        {/* Stats - Clean row without blocks */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 pt-2 border-t border-white/5">
+          <div className="flex justify-between">
+            <span className="text-xs text-steam/50">Speed</span>
+            <span className="text-sm font-semibold text-white">
+              {speed ? `${Math.round(speed)} km/h` : "—"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-xs text-steam/50">Delay</span>
+            <span className={`text-sm font-semibold ${delayColor}`}>
+              {delayText}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-xs text-steam/50">Next</span>
+            <span className="text-sm font-semibold text-white truncate max-w-[120px]" title={nextStation}>
+              {nextStation}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-xs text-steam/50">Distance</span>
+            <span className="text-sm font-semibold text-white">
+              {status.train?.distance ? `${status.train.distance} km` : "—"}
+            </span>
           </div>
         </div>
 
-        {/* Stats Grid - 4 columns */}
-        <div className="grid grid-cols-4 gap-2">
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
-            <p className="text-[8px] font-semibold text-steam uppercase tracking-[0.1em]">ETA</p>
-            <p className="text-sm font-bold text-white">{status.eta_next || "—"}</p>
-          </div>
-
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
-            <p className="text-[8px] font-semibold text-steam uppercase tracking-[0.1em]">Speed</p>
-            <p className="text-sm font-bold text-white">
-              {typeof status.speed === "number" ? status.speed : "—"}
-            </p>
-          </div>
-
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
-            <p className="text-[8px] font-semibold text-steam uppercase tracking-[0.1em]">Status</p>
-            <p className={`text-sm font-bold ${delayColor}`}>{statusText}</p>
-          </div>
-
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
-            <p className="text-[8px] font-semibold text-steam uppercase tracking-[0.1em]">Next</p>
-            <p className="text-sm font-bold text-white truncate">{nextStation}</p>
-          </div>
+        {/* Current Location */}
+        <div className="text-center pt-1 text-xs">
+          <span className="text-steam/50">Current Location: </span>
+          <span className="text-white font-medium">
+            {currentStationName}
+          </span>
         </div>
       </div>
     </div>
